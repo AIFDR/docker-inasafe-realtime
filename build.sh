@@ -19,7 +19,7 @@ function download_analysis_data {
 
 function build_realtime_image {
     echo "Building InaSAFE Realtime Dockerfile"
-    docker build -t AIFDR/${INASAFE_REALTIME_IMAGE} .
+    docker build -t aifdr/${INASAFE_REALTIME_IMAGE} .
 }
 
 download_analysis_data
