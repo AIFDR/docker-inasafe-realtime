@@ -1,7 +1,7 @@
 #!/bin/sh
 
 function show_credentials {
-   docker.io cp inasafe-realtime-sftp:/credentials .
+   docker cp inasafe-realtime-sftp:/credentials .
    cat credentials
    rm credentials
 }
@@ -22,7 +22,7 @@ INSAFE_REALTIME_PROJECT=${REALTIME_DATA_DIR}/realtime.qgs
 INASAFE_POPULATION_PATH=${REALTIME_DATA_DIR}/exposure/population.tif
 GEONAMES_SQLITE_PATH=${REALTIME_DATA_DIR}/indonesia.sqlite
 
-docker.io run --name="inasafe-realtime" \
+docker run --name="inasafe-realtime" \
 -e EQ_SFTP_BASE_URL=${SFTP_LOCAL_IP} \
 -e EQ_SFTP_PORT=${SFTP_LOCAL_PORT} \
 -e EQ_SFTP_USER_NAME=${SFTP_USER_NAME} \
@@ -38,5 +38,5 @@ docker.io run --name="inasafe-realtime" \
 -i -t AIFDR/${INASAFE_REALTIME_IMAGE}
 
 # Kill the container right away
-docker.io kill inasafe-realtime
-docker.io rm inasafe-realtime
+docker kill inasafe-realtime
+docker rm inasafe-realtime
