@@ -1,6 +1,6 @@
 #!/bin/sh
 
-function show_credentials {
+function get_credentials {
    docker.io cp inasafe-realtime-sftp:/credentials .
    cat credentials
    rm credentials
@@ -13,9 +13,9 @@ INASAFE_REALTIME_IMAGE=docker-realtime-inasafe
 
 SFTP_LOCAL_IP=$(docker inspect inasafe-realtime-sftp | grep IPAddress | cut -d '"' -f 4)
 SFTP_LOCAL_PORT=22
-SFTP_USER_NAME=$(show_credentials | cut -d ':' -f 2 | cut -d ' ' -f 2)
-SFTP_USER_PASSWORD=$(show_credentials | cut -d ':' -f 3 | cut -d ' ' -f 2)
-SFTP_BASE_PATH=/shakemaps
+SFTP_USER_NAME=$(get_credentials | cut -d ':' -f 2 | cut -d ' ' -f 2)
+SFTP_USER_PASSWORD=$(get_credentials | cut -d ':' -f 3 | cut -d ' ' -f 2)
+SFTP_BASE_PATH=/home/realtime/shakemaps
 
 INSAFE_REALTIME_TEMPLATE=${REALTIME_DATA_DIR}/realtime-template.qpt
 INSAFE_REALTIME_PROJECT=${REALTIME_DATA_DIR}/realtime.qgs
