@@ -1,21 +1,26 @@
 #!/bin/sh
 
 function get_credentials {
-   docker.io cp inasafe-realtime-sftp:/credentials .
+   docker cp inasafe-realtime-sftp:/credentials .
    cat credentials
    rm credentials
 }
 
-# This if for development so that we can ssh into it
 REALTIME_DIR=/home/realtime
+SHAKE_DIR=/home/realtime/shakemaps
 REALTIME_DATA_DIR=${REALTIME_DIR}/analysis_data
 INASAFE_REALTIME_IMAGE=docker-realtime-inasafe
+SFTP_IMAGE=inasafe-realtime-sftp
 
-SFTP_LOCAL_IP=$(docker inspect inasafe-realtime-sftp | grep IPAddress | cut -d '"' -f 4)
-SFTP_LOCAL_PORT=22
+# Kill the previous container
+docker.io kill ${INASAFE_REALTIME_IMAGE}
+docker.io rm ${INASAFE_REALTIME_IMAGE}
+
+SFTP_LOCAL_IP=$(docker inspect ${SFTP_IMAGE} | grep IPAddress | cut -d '"' -f 4)
+SFTP_LOCAL_PORT=$(docker inspect ${SFTP_IMAGE} | grep /tcp -m 1 | cut -d ':'-f 1 | cut -d '"' -f 2 | cut -d '/' -f 1)
 SFTP_USER_NAME=$(get_credentials | cut -d ':' -f 2 | cut -d ' ' -f 2)
 SFTP_USER_PASSWORD=$(get_credentials | cut -d ':' -f 3 | cut -d ' ' -f 2)
-SFTP_BASE_PATH=/home/realtime/shakemaps
+SFTP_BASE_PATH=$(docker inspect ${SFTP_IMAGE} | grep ${SHAKE_DIR} -m 1 | cut -d ':' -f 1 | cut -d '"' -f 2)
 
 INSAFE_REALTIME_TEMPLATE=${REALTIME_DATA_DIR}/realtime-template.qpt
 INSAFE_REALTIME_PROJECT=${REALTIME_DATA_DIR}/realtime.qgs
@@ -35,8 +40,4 @@ docker.io run --name="inasafe-realtime" \
 -v ${REALTIME_DATA_DIR}:${REALTIME_DATA_DIR} \
 -v ${REALTIME_DIR}/shakemaps-cache:${REALTIME_DIR}/shakemaps-cache \
 -v ${REALTIME_DIR}/shakemaps-extracted:${REALTIME_DIR}/shakemaps-extracted \
--i -t AIFDR/${INASAFE_REALTIME_IMAGE}
-
-# Kill the container right away
-docker.io kill inasafe-realtime
-docker.io rm inasafe-realtime
+-i -t aifdr/${INASAFE_REALTIME_IMAGE}
