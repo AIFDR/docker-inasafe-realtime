@@ -25,9 +25,6 @@ RUN apt-get -y install qgis python-qgis git python-paramiko xvfb
 # Get InaSAFE 2.1
 # For production use this:
 RUN git clone --branch realtime http://github.com/AIFDR/inasafe.git --depth 1 --verbose /home/realtime/src/inasafe
-# TODO: For development, copy from host. Not finished
-# ADD version-2_1_0.tar.gz /tmp/inasafe.tar.gz
-# RUN tar xfz /tmp/inasafe.tar.gz
 
 # Copy InaSAFE environment that we provide to override the one from the repo
 ADD run-env-linux.sh /home/realtime/src/inasafe/run-env-linux.sh
