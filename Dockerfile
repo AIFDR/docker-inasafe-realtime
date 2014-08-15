@@ -22,13 +22,6 @@ RUN gpg --keyserver keyserver.ubuntu.com --recv 47765B75; gpg --export --armor 4
 RUN apt-get -y update
 RUN apt-get -y install qgis python-qgis git python-paramiko xvfb
 
-# Get InaSAFE 2.1
-# For production use this:
-RUN git clone --branch realtime http://github.com/AIFDR/inasafe.git --depth 1 --verbose /home/realtime/src/inasafe
-
-# Copy InaSAFE environment that we provide to override the one from the repo
-ADD run-env-linux.sh /home/realtime/src/inasafe/run-env-linux.sh
-
 # Called on first run of docker - will run make-latest-shakemap.sh
 ADD start.sh /start.sh
 RUN chmod 0755 /start.sh

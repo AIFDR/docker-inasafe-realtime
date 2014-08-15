@@ -1,6 +1,7 @@
 #!/bin/bash
 
 REALTIME_DIR=/home/realtime
+INASAFE_SOURCE_DIR=${REALTIME_DIR}/src/inasafe
 SHAKE_DIR=/home/realtime/shakemaps
 REALTIME_DATA_DIR=${REALTIME_DIR}/analysis_data
 INASAFE_REALTIME_IMAGE=docker-realtime-inasafe
@@ -12,6 +13,25 @@ function get_credentials {
    cat credentials
    rm credentials
 }
+
+function get_inasafe {
+
+    echo ""
+    echo "Pulling the latest InaSAFE Realtime from Github."
+    echo "================================================"
+
+    if [ ! -d ${INASAFE_SOURCE_DIR} ]
+    then
+        git clone --branch realtime http://github.com/AIFDR/inasafe.git --depth 1 --verbose ${INASAFE_SOURCE_DIR}
+    else
+        cd ${INASAFE_SOURCE_DIR}
+        git pull origin realtime
+        cd -
+    fi
+}
+
+# Get inasafe source
+get_inasafe
 
 # Kill the previous container
 docker kill ${INASAFE_REALTIME_IMAGE}
@@ -38,6 +58,7 @@ docker run --name="${INASAFE_REALTIME_IMAGE}" \
 -e INSAFE_REALTIME_PROJECT=${INSAFE_REALTIME_PROJECT} \
 -e INASAFE_POPULATION_PATH=${INASAFE_POPULATION_PATH} \
 -e GEONAMES_SQLITE_PATH=${GEONAMES_SQLITE_PATH} \
+-v ${INASAFE_SOURCE_DIR}:${INASAFE_SOURCE_DIR} \
 -v ${REALTIME_DATA_DIR}:${REALTIME_DATA_DIR} \
 -v ${REALTIME_DIR}/shakemaps-cache:${REALTIME_DIR}/shakemaps-cache \
 -v ${REALTIME_DIR}/shakemaps-extracted:${REALTIME_DIR}/shakemaps-extracted \
